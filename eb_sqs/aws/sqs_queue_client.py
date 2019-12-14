@@ -11,10 +11,14 @@ from eb_sqs.worker.queue_client import QueueClient, QueueDoesNotExistException, 
 class SqsQueueClient(QueueClient):
     def __init__(self):
         # type: () -> None
-        self.sqs = boto3.resource('sqs',
-                                  region_name=settings.AWS_REGION,
-                                  config=Config(retries={'max_attempts': settings.AWS_MAX_RETRIES})
-                                  )
+        self.sqs = boto3.Session(
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        ).resource('sqs',
+                   region_name=settings.AWS_REGION,
+                   config=Config(
+                       retries={'max_attempts': settings.AWS_MAX_RETRIES})
+                   )
         self.queue_cache = {}
 
     def _get_queue(self, queue_name):

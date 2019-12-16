@@ -14,7 +14,10 @@ from eb_sqs.worker.queue_client import QueueDoesNotExistException
 class AwsQueueClientTest(TestCase):
     @mock_sqs()
     def test_add_message(self):
-        sqs = boto3.resource('sqs')
+        sqs = boto3.Session(
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        ).resource('sqs')
         queue = sqs.create_queue(QueueName='eb-sqs-default')
 
         queue_client = SqsQueueClient()
@@ -27,7 +30,10 @@ class AwsQueueClientTest(TestCase):
     @mock_sqs()
     def test_add_message_delayed(self):
         delay = 1
-        sqs = boto3.resource('sqs')
+        sqs = boto3.Session(
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        ).resource('sqs')
         queue = sqs.create_queue(QueueName='eb-sqs-default')
         queue_client = SqsQueueClient()
 
@@ -44,7 +50,10 @@ class AwsQueueClientTest(TestCase):
     @skip("Disabled because current mock_sqs doesn't support invalid queue call")
     @mock_sqs()
     def test_add_message_wrong_queue(self):
-        sqs = boto3.resource('sqs')
+        sqs = boto3.Session(
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        ).resource('sqs')
         queue = sqs.create_queue(QueueName='default')
         queue_client = SqsQueueClient()
 

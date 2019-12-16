@@ -2,11 +2,11 @@ from __future__ import absolute_import, unicode_literals
 
 import boto3
 from botocore.config import Config
-from django.conf import settings
 from django.core.management import BaseCommand, CommandError
 import requests
 from requests.exceptions import ConnectionError
 
+from eb_sqs import settings
 
 class Command(BaseCommand):
     help = "Command to run the EB SQS worker"
@@ -38,7 +38,10 @@ class Command(BaseCommand):
 
         try:
             self.stdout.write('Connect to SQS')
-            sqs = boto3.resource(
+            sqs = boto3.Session(
+                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            ).resource(
                 'sqs',
                 region_name=settings.AWS_REGION,
                 config=Config(retries={'max_attempts': settings.AWS_MAX_RETRIES})

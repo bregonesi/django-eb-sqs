@@ -31,7 +31,10 @@ class WorkerService(object):
         # type: (list) -> None
         logger.debug('[django-eb-sqs] Connecting to SQS: {}'.format(', '.join(queue_names)))
 
-        sqs = boto3.resource(
+        sqs = boto3.Session(
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+        ).resource(
             'sqs',
             region_name=settings.AWS_REGION,
             config=Config(retries={'max_attempts': settings.AWS_MAX_RETRIES})
